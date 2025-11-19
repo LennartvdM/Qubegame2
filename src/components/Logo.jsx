@@ -1,112 +1,23 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 
-const Logo = ({ 
-  position, 
-  onClick, 
-  autoPilot, 
-  logoWidthRef 
-}) => {
-  // State for hover and wiggle animations
-  const [isHovered, setIsHovered] = useState(false);
-  const [wiggleActive, setWiggleActive] = useState(false);
+const Logo = () => {
+  const logoRef = useRef(null);
 
-  // Handle logo hover: trigger wiggle once on mouse enter
-  const handleLogoHover = (hovering) => {
-    setIsHovered(hovering);
-    if (hovering) {
-      setWiggleActive(true);
-    }
-  };
+  useEffect(() => {
+    const el = logoRef.current;
+    if (!el) return;
 
-  const handleWiggleEnd = (e) => {
-    if (e.animationName === 'wiggleInner') {
-      setWiggleActive(false);
-    }
-  };
-
-  const scaleValue = isHovered ? 1.15 : 1;
-  const isActive = position === 'down';
-  const autoPilotGlow = autoPilot ? 'filter drop-shadow-lg' : '';
+    el.style.transition = 'transform 0.2s ease-out';
+    el.style.transform = 'translateY(0)';
+  }, []);
 
   return (
     <div
-      style={{
-        position: 'absolute',
-        left: '50%',
-        top: position === 'up' ? '180px' : '240px',
-        transform: `translateX(-50%) scale(${scaleValue})`,
-        transformOrigin: 'center',
-        transition: `
-          top 0.3s cubic-bezier(0.34, 1.76, 0.64, 1.4),
-          transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1.3)
-        `,
-        width: `${logoWidthRef.current}px`,
-        pointerEvents: 'auto',
-        cursor: 'pointer',
-      }}
-      onClick={onClick}
-      onMouseEnter={() => handleLogoHover(true)}
-      onMouseLeave={() => handleLogoHover(false)}
+      ref={logoRef}
+      className="text-center mb-4"
+      style={{ transform: 'translateY(-20px)' }}
     >
-      <div
-        className={`relative flex items-center justify-center 
-          ${autoPilot ? 'animate-bob-intense' : !isActive ? 'animate-bob' : ''}
-          ${autoPilotGlow}
-        `}
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-      >
-        <div
-          className={`relative w-full h-full flex items-center justify-center 
-            ${wiggleActive ? 'animate-wiggle-inner' : ''}
-          `}
-          onAnimationEnd={handleWiggleEnd}
-        >
-          <div
-            className={`w-20 h-20 rounded-lg shadow-md
-              flex items-center justify-center
-              ${!isActive ? 'bg-purple-500' : ''}
-              ${autoPilot ? 'bg-purple-600' : ''}
-            `}
-            style={{
-              transition: 'all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1.1)',
-              boxShadow: isActive
-                ? '0 10px 15px -3px rgba(76, 29, 149, 0.4)'
-                : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-              backgroundColor: isActive ? '#8054b3' : '',
-              transform: 'rotate(45deg)',
-            }}
-          >
-            <div
-              className={`w-16 h-16 rounded-lg absolute ${!isActive ? 'bg-purple-400' : ''}`}
-              style={{
-                backgroundColor: isActive ? '#9166c7' : '',
-                transition: 'background-color 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              }}
-            ></div>
-            <div
-              className={`w-12 h-12 rounded-lg absolute flex items-center justify-center ${!isActive ? 'bg-purple-300' : ''}`}
-              style={{
-                backgroundColor: isActive ? '#a37dd6' : '',
-                transition: 'background-color 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              }}
-            >
-              <div className="w-6 h-8 bg-white rounded-sm relative">
-                <div
-                  className={`w-2 h-2 rounded-full absolute top-4 left-2
-                    ${isActive ? 'bg-red-600' : 'bg-purple-700'}
-                    ${autoPilot ? 'bg-orange-500 animate-pulse' : ''}`}
-                  style={{
-                    transition: 'background-color 0.15s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  }}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <h1 className="text-4xl font-bold text-gray-800">Qube Game</h1>
     </div>
   );
 };

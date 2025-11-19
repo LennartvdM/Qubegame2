@@ -1,30 +1,29 @@
 import React from 'react';
 
-const ControlButtons = ({ debugMode, autoPilot, toggleDebugMode, toggleAutoPilot, conveyorSpeed }) => {
+const ControlButtons = ({ isRunning, toggleGame, handleStop, triggerBurst }) => {
   return (
-    <>
-      <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
-        <button
-          onClick={toggleDebugMode}
-          className={`px-4 py-2 rounded-lg shadow-md font-medium
-            ${debugMode ? 'bg-purple-600 text-white' : 'bg-white text-purple-700 border border-purple-200'}`}
-        >
-          {debugMode ? 'Debug Mode: ON' : 'Debug Mode: OFF'}
-        </button>
-        <button
-          onClick={toggleAutoPilot}
-          className={`px-4 py-2 rounded-lg shadow-md font-medium text-white ${autoPilot ? 'bg-purple-800 animate-pulse-subtle' : 'bg-purple-600'}`}
-        >
-          QUBE MODE
-        </button>
-      </div>
+    <div className="w-full max-w-lg flex flex-col sm:flex-row gap-3">
+      <button
+        onClick={toggleGame}
+        className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-purple-700 transition"
+      >
+        {isRunning ? 'Pause' : 'Start'}
+      </button>
 
-      {debugMode && (
-        <div className="absolute bottom-4 right-4 bg-white px-2 py-1 rounded text-xs">
-          Speed: {Math.round(conveyorSpeed)}
-        </div>
-      )}
-    </>
+      <button
+        onClick={handleStop}
+        className="flex-1 bg-blue-500 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-blue-600 transition"
+      >
+        Stop
+      </button>
+
+      <button
+        onClick={triggerBurst}
+        className="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-orange-600 transition"
+      >
+        Burst
+      </button>
+    </div>
   );
 };
 
