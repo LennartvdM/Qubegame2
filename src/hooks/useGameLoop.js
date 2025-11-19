@@ -4,24 +4,19 @@ const useGameLoop = ({
   gameActive,
   inspecting,
   autoPilot,
-  logoPosition,
   packages,
   conveyorSpeed,
   setPackages,
-  setScore,
-  setInspecting,
-  setCurrentInspection,
-  setLogoPosition,
-  gameAreaRef,
-  logoHitscanRef,
   packageWidthRef
 }) => {
-  // Refs for animation and timing
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
-  const burstModeRef = useRef(false);
   const nextPackageTimeRef = useRef(0);
-  const packageSpeedRef = useRef(120);
+  const packagesRef = useRef(packages);
+
+  useEffect(() => {
+    packagesRef.current = packages;
+  }, [packages]);
 
   // Main game loop
   useEffect(() => {
@@ -32,7 +27,8 @@ const useGameLoop = ({
 
       // Spawn packages
       if (timestamp >= nextPackageTimeRef.current && gameActive) {
-        const lastPackage = packages[packages.length - 1];
+        const lastPackageList = packagesRef.current;
+        const lastPackage = lastPackageList[lastPackageList.length - 1];
         const minDist = packageWidthRef.current + 5;
         const canSpawn = !lastPackage || lastPackage.x > minDist;
         if (canSpawn) {
@@ -88,18 +84,12 @@ const useGameLoop = ({
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, [
-    gameActive, 
-    inspecting, 
-    logoPosition, 
-    packages, 
-    autoPilot, 
-    conveyorSpeed, 
-    setPackages, 
-    setScore, 
-    setInspecting, 
-    setCurrentInspection, 
-    setLogoPosition,
-    logoHitscanRef
+    gameActive,
+    inspecting,
+    autoPilot,
+    conveyorSpeed,
+    setPackages,
+    packageWidthRef
   ]);
 
   return null;

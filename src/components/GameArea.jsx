@@ -53,8 +53,8 @@ const GameArea = ({
       {renderInspectionBeam()}
       {renderCollisionDebug()}
 
-      {packages.map((pkg, index) => (
-        <Package key={index} {...pkg} />
+      {packages.map((pkg) => (
+        <Package key={pkg.id} pkg={pkg} debugMode={debugMode} />
       ))}
 
       <Logo
