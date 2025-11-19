@@ -60,7 +60,7 @@ const GameArea = ({
       <Logo
         position={logoPosition}
         onClick={handleLogoClick}
-        ref={logoWidthRef}
+        logoWidthRef={logoWidthRef}
         autoPilot={autoPilot}
       />
     </div>
