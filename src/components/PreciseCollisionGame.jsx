@@ -20,6 +20,11 @@ const PreciseCollisionGame = () => {
   const lastTimeRef = useRef(null);
   const packageRef = useRef(null);
   const burstModeRef = useRef(null);
+  const touchStartRef = useRef(null);
+
+  const TAP_MAX_DISTANCE = 10; // px
+  const TAP_MAX_TIME = 250; // ms
+  const SWIPE_MIN_DISTANCE = 30; // px
 
   const resetGame = () => {
     setPosition(GAME_HEIGHT / 2);
@@ -94,6 +99,47 @@ const PreciseCollisionGame = () => {
     }
   };
 
+  const handlePointerDownOnPackage = (e) => {
+    if (isGameOver) return;
+
+    touchStartRef.current = {
+      y: e.clientY,
+      time: performance.now(),
+      pointerId: e.pointerId,
+    };
+
+    if (e.currentTarget.setPointerCapture) {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+  };
+
+  const handlePointerUpOnPackage = (e) => {
+    const start = touchStartRef.current;
+    if (!start || start.pointerId !== e.pointerId) return;
+
+    const dy = e.clientY - start.y;
+    const dt = performance.now() - start.time;
+    const absDy = Math.abs(dy);
+
+    touchStartRef.current = null;
+
+    if (!isRunning || isGameOver) return;
+
+    if (absDy < TAP_MAX_DISTANCE && dt < TAP_MAX_TIME) {
+      handleStop();
+      return;
+    }
+
+    if (dy > SWIPE_MIN_DISTANCE) {
+      handleStop();
+      return;
+    }
+
+    if (dy < -SWIPE_MIN_DISTANCE) {
+      triggerBurst();
+    }
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (!burstModeRef.current) return;
@@ -120,7 +166,12 @@ const PreciseCollisionGame = () => {
         <div
           ref={packageRef}
           className="absolute left-1/2 transform -translate-x-1/2"
-          style={{ top: `${(position / GAME_HEIGHT) * 100}%` }}
+          style={{
+            top: `${(position / GAME_HEIGHT) * 100}%`,
+            touchAction: 'none',
+          }}
+          onPointerDown={handlePointerDownOnPackage}
+          onPointerUp={handlePointerUpOnPackage}
         >
           <Package />
         </div>
